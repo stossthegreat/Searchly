@@ -11,7 +11,7 @@ class OnboardingScreen extends StatelessWidget {
 
   const OnboardingScreen({super.key, required this.onComplete});
 
-  static const _seenKey = 'gobly_onboarding_seen';
+  static const _seenKey = 'searchly_onboarding_seen';
 
   /// Returns true if onboarding has already been shown.
   static Future<bool> hasBeenSeen() async {
@@ -44,7 +44,7 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: 24),
               // App name
               const Text(
-                'Gobly',
+                'Searchly',
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w900,

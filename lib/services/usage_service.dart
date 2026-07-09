@@ -16,11 +16,11 @@ class UsageService extends ChangeNotifier {
   static final UsageService _instance = UsageService._();
   static UsageService get instance => _instance;
 
-  static const _searchCountKey = 'gobly_usage_ai_searches';
-  static const _planCountKey = 'gobly_usage_ai_plans';
-  static const _isProKey = 'gobly_is_pro';
-  static const _hasRatedKey = 'gobly_has_rated';
-  static const _totalAiUsesKey = 'gobly_total_ai_uses';
+  static const _searchCountKey = 'searchly_usage_ai_searches';
+  static const _planCountKey = 'searchly_usage_ai_plans';
+  static const _isProKey = 'searchly_is_pro';
+  static const _hasRatedKey = 'searchly_has_rated';
+  static const _totalAiUsesKey = 'searchly_total_ai_uses';
 
   static const int maxFreeSearches = 3;
   static const int maxFreePlans = 1;

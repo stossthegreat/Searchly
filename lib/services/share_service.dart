@@ -33,7 +33,7 @@ class ShareService {
     await _showSharePreview(
       context,
       card: card,
-      shareText: '${recipe.title} — found on Gobly',
+      shareText: '${recipe.title} — found on Searchly',
     );
   }
 
@@ -59,7 +59,7 @@ class ShareService {
     await _showSharePreview(
       context,
       card: card,
-      shareText: '${recipe['title']} — found on Gobly',
+      shareText: '${recipe['title']} — found on Searchly',
     );
   }
 
@@ -97,7 +97,7 @@ class ShareService {
     await _showSharePreview(
       context,
       card: card,
-      shareText: '$title — ${recipes.length} meals\n\n$mealList\n\nPlanned with Gobly',
+      shareText: '$title — ${recipes.length} meals\n\n$mealList\n\nPlanned with Searchly',
     );
   }
 
@@ -176,7 +176,7 @@ class ShareService {
 
                       final tempDir = await getTemporaryDirectory();
                       final file = File(
-                        '${tempDir.path}/gobly_share_${DateTime.now().millisecondsSinceEpoch}.png',
+                        '${tempDir.path}/searchly_share_${DateTime.now().millisecondsSinceEpoch}.png',
                       );
                       await file.writeAsBytes(
                         byteData.buffer.asUint8List(),

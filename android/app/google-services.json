@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:809944092883:android:83e22bb08251a6ac0cc426",
         "android_client_info": {
-          "package_name": "com.gobly.gobly"
+          "package_name": "com.searchly.app"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "809944092883-6i2kp4iov58icv1oogmh09uoj2b178su.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.gobly.app"
+                "bundle_id": "com.searchly.app"
               }
             }
           ]

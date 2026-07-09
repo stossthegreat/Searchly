@@ -9,7 +9,7 @@ class CookbooksService extends ChangeNotifier {
   static final CookbooksService _instance = CookbooksService._();
   static CookbooksService get instance => _instance;
 
-  static const _storageKey = 'gobly_cookbooks_v1';
+  static const _storageKey = 'searchly_cookbooks_v1';
 
   List<Cookbook> _cookbooks = [];
   List<Cookbook> get cookbooks => List.unmodifiable(_cookbooks);

@@ -6,6 +6,7 @@ import { registerHealthRoute } from './routes/health.js';
 import { registerDiagnoseRoute } from './routes/diagnose.js';
 import { registerDebugRoute } from './routes/debug.js';
 import { registerSearchRoute } from './routes/search.js';
+import { registerDecideRoute } from './routes/decide.js';
 import { registerPlanWeekRoute } from './routes/plan-week.js';
 import { registerTranscribeRoute } from './routes/transcribe.js';
 import { registerParseUrlRoute } from './routes/parse-url.js';
@@ -14,6 +15,7 @@ import { startTrendingScheduler } from './services/trending-scheduler.js';
 
 async function main(): Promise<void> {
   const app = Fastify({
+    bodyLimit: 15 * 1024 * 1024, // 15 MB — base64 product photos in /api/decide JSON bodies
     logger: {
       level: 'info',
       transport:
@@ -74,17 +76,19 @@ async function main(): Promise<void> {
   await registerDiagnoseRoute(app);
   await registerDebugRoute(app);
   await registerSearchRoute(app);
+  await registerDecideRoute(app); // Gobly buying/decision engine — /api/decide
   await registerPlanWeekRoute(app);
   await registerTranscribeRoute(app);
   await registerParseUrlRoute(app);
   await registerTrendingRoute(app);
 
   app.get('/', async () => ({
-    name: 'Recimo API',
-    version: '0.1.0',
+    name: 'Gobly API',
+    version: '0.2.0',
     endpoints: [
       'GET /health',
       'GET /api/diagnose',
+      'POST /api/decide', // buying/decision engine
       'POST /api/search',
       'POST /api/plan-week',
     ],

@@ -65,14 +65,14 @@ class ShareRecipeCard extends StatelessWidget {
             ),
           ),
 
-          // TOP — tiny Gobly mark, rating pill
+          // TOP — tiny Searchly mark, rating pill
           Positioned(
             top: 20,
             left: 20,
             right: 20,
             child: Row(
               children: [
-                // Gobly logo + name — frosted pill
+                // Searchly logo + name — frosted pill
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -92,7 +92,7 @@ class ShareRecipeCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       const Text(
-                        'gobly',
+                        'searchly',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -327,7 +327,7 @@ class ShareCarouselCover extends StatelessWidget {
                 Image.asset('assets/logo.png', width: 28, height: 28),
                 const SizedBox(width: 8),
                 Text(
-                  'gobly',
+                  'searchly',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,

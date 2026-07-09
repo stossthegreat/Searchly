@@ -17,7 +17,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   final FocusNode _addFocus = FocusNode();
   bool _showAddField = false;
   String _selectedCategory = 'Other';
-  // false = Gobly (auto from meal plan), true = My (manual items)
+  // false = Searchly (auto from meal plan), true = My (manual items)
   bool _showMyItems = false;
 
   final List<Map<String, dynamic>> _categories = [
@@ -61,7 +61,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
       listenable: GroceryService.instance,
       builder: (context, _) {
         final allItems = GroceryService.instance.items;
-        // Filter by current tab: Gobly = auto items, My = manual items
+        // Filter by current tab: Searchly = auto items, My = manual items
         final filteredItems = _showMyItems
             ? allItems.where((i) => !i.isAuto).toList()
             : allItems.where((i) => i.isAuto).toList();
@@ -83,7 +83,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
               ),
             ],
           ),
-          // Only show FAB on the "My" tab — Gobly items are auto-generated
+          // Only show FAB on the "My" tab — Searchly items are auto-generated
           floatingActionButton: _showMyItems
               ? FloatingActionButton(
                   onPressed: () {
@@ -238,7 +238,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
         child: Row(
           children: [
             _buildTab(
-              label: 'Gobly',
+              label: 'Searchly',
               count: autoCount,
               isSelected: !_showMyItems,
               onTap: () => setState(() {
@@ -327,7 +327,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   }
 
   Widget _buildEmptyState() {
-    final isGoblyTab = !_showMyItems;
+    final isSearchlyTab = !_showMyItems;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -342,7 +342,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
-                isGoblyTab
+                isSearchlyTab
                     ? Icons.auto_awesome_rounded
                     : Icons.edit_note_rounded,
                 color: AppColors.primary,
@@ -351,7 +351,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              isGoblyTab ? 'No auto ingredients yet' : 'No manual items yet',
+              isSearchlyTab ? 'No auto ingredients yet' : 'No manual items yet',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -360,7 +360,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              isGoblyTab
+              isSearchlyTab
                   ? 'Plan a meal with a recipe and ingredients\nappear here automatically'
                   : 'Tap + to add your own grocery items',
               textAlign: TextAlign.center,

@@ -6,7 +6,7 @@ import '../models/week_plan.dart';
 import 'user_profile_service.dart';
 import 'app_settings_service.dart';
 
-/// Calls the Gobly backend for AI-powered recipe search.
+/// Calls the Searchly backend for AI-powered recipe search.
 /// Reads the backend URL at call time from AppSettingsService so the user
 /// can configure it at runtime in the settings screen.
 class RecipeSearchService {

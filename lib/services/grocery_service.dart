@@ -14,7 +14,7 @@ class GroceryService extends ChangeNotifier {
   static final GroceryService _instance = GroceryService._();
   static GroceryService get instance => _instance;
 
-  static const _storageKey = 'gobly_grocery_v1';
+  static const _storageKey = 'searchly_grocery_v1';
 
   List<GroceryItem> _items = [];
   List<GroceryItem> get items => List.unmodifiable(_items);

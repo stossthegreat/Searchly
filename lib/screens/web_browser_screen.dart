@@ -5,7 +5,7 @@ import '../theme/app_theme.dart';
 import '../services/recipe_search_service.dart';
 import '../services/saved_recipes_service.dart';
 
-/// In-app web browser with a floating "Save to Gobly" button.
+/// In-app web browser with a floating "Save to Searchly" button.
 /// User browses recipe sites, taps save, our agent extracts the
 /// recipe from whatever page they're on. Like ReciMe's orange button.
 class WebBrowserScreen extends StatefulWidget {
@@ -207,7 +207,7 @@ class _WebBrowserScreenState extends State<WebBrowserScreen> {
           Expanded(
             child: WebViewWidget(controller: _controller),
           ),
-          // Save to Gobly button — shows when on a recipe site
+          // Save to Searchly button — shows when on a recipe site
           if (_isOnRecipeSite)
             Container(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
@@ -244,7 +244,7 @@ class _WebBrowserScreenState extends State<WebBrowserScreen> {
                             height: 22,
                           ),
                     label: Text(
-                      _saving ? 'Extracting...' : 'Save to Gobly',
+                      _saving ? 'Extracting...' : 'Save to Searchly',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,

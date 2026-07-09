@@ -291,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       const SizedBox(width: 10),
                       const Text(
-                        'Gobly',
+                        'Searchly',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
@@ -547,7 +547,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   /// Opens the in-app browser with Google search. User browses recipe
-  /// sites and taps "Save to Gobly" to extract the recipe from whatever
+  /// sites and taps "Save to Searchly" to extract the recipe from whatever
   /// page they're on. Like ReciMe's orange save button.
   void _showGoogleSearchSheet() {
     final controller = TextEditingController();
@@ -590,7 +590,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               const SizedBox(height: 6),
               Text(
-                'Browse any recipe site, tap Save to Gobly',
+                'Browse any recipe site, tap Save to Searchly',
                 style: TextStyle(
                   fontSize: 13,
                   color: AppColors.textSecondary,

@@ -14,7 +14,7 @@ class MealPlanService extends ChangeNotifier {
   static final MealPlanService _instance = MealPlanService._();
   static MealPlanService get instance => _instance;
 
-  static const _storageKey = 'gobly_meal_plan_v1';
+  static const _storageKey = 'searchly_meal_plan_v1';
 
   Map<String, PlannedMeal> _meals = {};
   Map<String, PlannedMeal> get meals => Map.unmodifiable(_meals);

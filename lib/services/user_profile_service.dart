@@ -9,7 +9,7 @@ class UserProfileService extends ChangeNotifier {
   static final UserProfileService _instance = UserProfileService._();
   static UserProfileService get instance => _instance;
 
-  static const _storageKey = 'gobly_user_profile_v1';
+  static const _storageKey = 'searchly_user_profile_v1';
 
   UserProfile _profile = const UserProfile();
   UserProfile get profile => _profile;

@@ -46,7 +46,7 @@ class _RatingDialogState extends State<_RatingDialog> {
       // TODO: Replace with actual store URLs when published
       try {
         await launchUrl(
-          Uri.parse('market://details?id=com.gobly.gobly'),
+          Uri.parse('market://details?id=com.searchly.searchly'),
           mode: LaunchMode.externalApplication,
         );
       } catch (_) {
@@ -94,7 +94,7 @@ class _RatingDialogState extends State<_RatingDialog> {
             const SizedBox(height: 18),
             // Title
             const Text(
-              'Enjoying Gobly?',
+              'Enjoying Searchly?',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,

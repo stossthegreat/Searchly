@@ -1,8 +1,8 @@
-# Gobly
+# Searchly
 
 The fastest way to find the right recipe and plan your week.
 
-Gobly is a Flutter app that pairs a lethal AI agent with a clean three-tab UX (Home / Plan / Groceries) to take you from "what should I cook tonight?" to a fully planned week with auto-populated grocery list in seconds.
+Searchly is a Flutter app that pairs a lethal AI agent with a clean three-tab UX (Home / Plan / Groceries) to take you from "what should I cook tonight?" to a fully planned week with auto-populated grocery list in seconds.
 
 ## Features
 

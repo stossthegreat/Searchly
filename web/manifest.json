@@ -1,11 +1,11 @@
 {
-    "name": "Gobly",
-    "short_name": "Gobly",
+    "name": "Searchly",
+    "short_name": "Searchly",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#2E7D32",
     "theme_color": "#2E7D32",
-    "description": "Gobly — the fastest way to find the right recipe and plan your week.",
+    "description": "Searchly — the fastest way to find the right recipe and plan your week.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

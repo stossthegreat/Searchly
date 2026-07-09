@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Gobly</string>
+	<string>Searchly</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>gobly</string>
+	<string>searchly</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -46,13 +46,13 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Gobly uses your microphone to let you speak your recipe queries.</string>
+	<string>Searchly uses your microphone to let you speak your recipe queries.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Gobly uses speech recognition to turn your voice into recipe searches.</string>
+	<string>Searchly uses speech recognition to turn your voice into recipe searches.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Gobly uses your photo library to add images to your recipes.</string>
+	<string>Searchly uses your photo library to add images to your recipes.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Gobly uses your camera to photograph dishes for your recipes.</string>
+	<string>Searchly uses your camera to photograph dishes for your recipes.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

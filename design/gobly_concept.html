@@ -1,0 +1,353 @@
+<title>Searchly — Point. Know. Buy smarter.</title>
+<style>
+  :root{
+    --b900:#050d33; --b800:#081552; --b700:#0e2585; --b600:#1740b8; --b500:#2e5bff;
+    --cyan:#38e1ff; --violet:#8b5cff; --pink:#ff6fd8;
+    --white:#fff; --card:#fff;
+    --ink:#0a1440; --ink2:#5a6796; --ink3:#8a95bd;
+    --onblue:#eaf0ff; --onblue2:#9db0e8; --onblue3:#6478b8;
+    --good:#12c48b; --warn:#f7b32b; --bad:#ff5d73;
+    --sh:0 20px 50px -22px rgba(4,10,45,.65);
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans); color:var(--onblue); -webkit-font-smoothing:antialiased; line-height:1.45;
+    min-height:100%; display:flex; flex-direction:column; align-items:center; padding:34px 16px 70px; overflow-x:hidden;
+    background:
+      radial-gradient(120% 80% at 15% 0%, #17379e 0%, transparent 55%),
+      radial-gradient(120% 90% at 90% 20%, #0f2f9c 0%, transparent 50%),
+      radial-gradient(140% 120% at 50% 120%, #123aa8 0%, transparent 55%),
+      linear-gradient(180deg,#0a1c6b,#050d33 75%);
+    background-attachment:fixed;
+  }
+  .orbs{position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none}
+  .orb{position:absolute; border-radius:50%; filter:blur(70px); opacity:.5; mix-blend-mode:screen}
+  .orb.a{width:52vmax;height:52vmax; background:radial-gradient(circle,var(--cyan),transparent 62%); top:-16vmax; left:-12vmax; animation:float1 20s ease-in-out infinite}
+  .orb.b{width:48vmax;height:48vmax; background:radial-gradient(circle,var(--violet),transparent 62%); bottom:-18vmax; right:-14vmax; animation:float2 24s ease-in-out infinite}
+  .orb.c{width:36vmax;height:36vmax; background:radial-gradient(circle,#2e5bff,transparent 62%); top:38%; left:52%; animation:float3 28s ease-in-out infinite}
+  @keyframes float1{50%{transform:translate(7vmax,5vmax) scale(1.12)}}
+  @keyframes float2{50%{transform:translate(-6vmax,-7vmax) scale(1.15)}}
+  @keyframes float3{50%{transform:translate(-8vmax,6vmax) scale(1.2)}}
+
+  .stage{position:relative; z-index:1; width:100%; max-width:1180px; display:flex; flex-direction:column; align-items:center; gap:44px}
+  .lede{text-align:center; max-width:660px; display:flex; flex-direction:column; gap:15px; align-items:center}
+  .brand{display:flex; align-items:center; gap:12px}
+  .brand .mk{width:34px;height:34px;border-radius:11px; background:conic-gradient(from 210deg,var(--cyan),var(--b500),var(--violet),var(--cyan)); box-shadow:0 0 30px rgba(56,225,255,.55); position:relative; animation:spin 8s linear infinite}
+  .brand .mk::after{content:"";position:absolute;inset:9px;background:var(--b900);border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .brand h1{font-size:27px;font-weight:800;letter-spacing:-.03em;color:#fff}
+  .eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--onblue2);font-weight:700}
+  .lede .tag{font-size:19px;color:var(--onblue2);max-width:540px;text-wrap:balance}
+  .lede .tag b{color:#fff;font-weight:650}
+
+  .cols{display:flex;gap:44px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+
+  .phone{width:394px;max-width:100%;border-radius:46px;padding:13px;
+    background:linear-gradient(160deg,#20306e,#0a1450);
+    box-shadow:0 50px 120px -24px rgba(3,8,40,.85),0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.14);
+    flex:0 0 auto}
+  .screen{position:relative;border-radius:34px;overflow:hidden;height:816px;display:flex;flex-direction:column;
+    background:
+      radial-gradient(120% 60% at 50% -8%, #1c3fa8 0%, transparent 55%),
+      linear-gradient(180deg,#0c1f70,#060f3e 70%);}
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:31px;background:#04091f;border-radius:16px;z-index:40}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:17px 26px 8px;font-size:13px;font-weight:600;color:#fff;z-index:5}
+  .status .r{font-family:var(--mono);font-size:11px;color:var(--onblue2)}
+  .app{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 18px 28px;scrollbar-width:none}
+  .app::-webkit-scrollbar{display:none}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 16px}
+  .topbar .b{display:flex;align-items:center;gap:10px}
+  .topbar .mk{width:26px;height:26px;border-radius:9px;background:conic-gradient(from 210deg,var(--cyan),var(--b500),var(--violet),var(--cyan));position:relative}
+  .topbar .mk::after{content:"";position:absolute;inset:7px;background:#0a1560;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9)}
+  .topbar .b span{font-weight:800;letter-spacing:-.02em;font-size:18px;color:#fff}
+  .iconbtn{width:37px;height:37px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);color:#cdd8ff;display:grid;place-items:center;font-size:15px;backdrop-filter:blur(8px)}
+
+  .searchbar{display:flex;align-items:center;gap:10px;padding:15px 17px;border-radius:17px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--onblue2);font-size:14.5px;margin-bottom:13px;backdrop-filter:blur(10px)}
+  .searchbar .k{color:var(--cyan);font-size:16px}
+
+  .camera{position:relative;border-radius:26px;height:196px;margin-bottom:15px;overflow:hidden;cursor:pointer;
+    background:linear-gradient(150deg,#12235f,#0a1a63 55%,#081247);border:1px solid rgba(255,255,255,.14)}
+  .camera .scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 16px var(--cyan);animation:scanline 2.6s ease-in-out infinite}
+  @keyframes scanline{0%,100%{top:14%;opacity:0}50%{top:86%;opacity:1}}
+  .reticle{position:absolute;inset:0;margin:auto;width:150px;height:150px}
+  .reticle span{position:absolute;width:28px;height:28px;border:2.5px solid var(--cyan);opacity:.9;filter:drop-shadow(0 0 6px rgba(56,225,255,.6))}
+  .reticle span:nth-child(1){top:0;left:0;border-right:0;border-bottom:0;border-radius:11px 0 0 0}
+  .reticle span:nth-child(2){top:0;right:0;border-left:0;border-bottom:0;border-radius:0 11px 0 0}
+  .reticle span:nth-child(3){bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 11px}
+  .reticle span:nth-child(4){bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 11px 0}
+  .camera .obj{position:absolute;inset:0;display:grid;place-items:center;font-size:60px;filter:drop-shadow(0 12px 26px rgba(0,0,0,.5))}
+  .camera .hint{position:absolute;bottom:15px;left:0;right:0;text-align:center;font-size:12.5px;color:var(--onblue2)}
+
+  .chips{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 15px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:10px 16px;border-radius:14px;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer;transition:transform .3s cubic-bezier(.2,.9,.3,1.4),background .2s;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);color:var(--onblue2);display:flex;align-items:center;gap:7px}
+  .chip:hover{color:#fff}
+  .chip.on{color:#04123f;background:linear-gradient(135deg,var(--cyan),var(--b500));border-color:transparent;box-shadow:0 10px 26px -8px rgba(46,91,255,.8);transform:translateY(-1px)}
+  .chip .e{font-size:14px}
+
+  .scan{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;justify-content:center;align-items:center;padding:0 36px;gap:34px;
+    background:radial-gradient(circle at 50% 38%,rgba(20,45,130,.6),rgba(6,15,55,.94));backdrop-filter:blur(14px)}
+  .scan.show{display:flex}
+  .orbwrap{width:150px;height:150px;position:relative;display:grid;place-items:center}
+  .morph{position:absolute;inset:0;border-radius:46% 54% 58% 42%/50% 44% 56% 50%;
+    background:conic-gradient(from 0deg,var(--cyan),var(--b500),var(--violet),var(--pink),var(--cyan));
+    filter:blur(2px);animation:morph 3.4s ease-in-out infinite,spin 6s linear infinite;box-shadow:0 0 60px rgba(56,225,255,.5)}
+  .morph.two{inset:14px;opacity:.6;animation-direction:reverse;filter:blur(6px)}
+  @keyframes morph{50%{border-radius:58% 42% 44% 56%/46% 58% 42% 54%}}
+  .orbwrap .core{position:relative;z-index:2;width:74px;height:74px;border-radius:50%;background:rgba(6,15,55,.7);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:21px;color:#fff;backdrop-filter:blur(6px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+  .steps{width:100%;display:flex;flex-direction:column;gap:15px}
+  .step{display:flex;align-items:center;gap:13px;font-size:14.5px;color:var(--onblue3);opacity:.5;transform:translateX(-6px);transition:all .4s cubic-bezier(.2,.8,.2,1)}
+  .step .tk{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:grid;place-items:center;font-size:12px;flex:0 0 auto;transition:.3s}
+  .step.active{color:#fff;opacity:1;transform:none}
+  .step.active .tk{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 18px rgba(56,225,255,.6)}
+  .step.done{color:var(--onblue2);opacity:1;transform:none}
+  .step.done .tk{background:var(--good);border-color:var(--good);color:#04140c}
+
+  .result{display:none;flex-direction:column;gap:15px}
+  .result.show{display:flex}
+  .rise{opacity:0;transform:translateY(20px) scale(.98);animation:rise .6s cubic-bezier(.16,.84,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  .verdict{position:relative;border-radius:28px;padding:5px;overflow:hidden;
+    background:linear-gradient(135deg,var(--cyan),var(--b500) 45%,var(--violet));box-shadow:0 30px 70px -26px rgba(46,91,255,.7)}
+  .verdict .inner{background:var(--card);border-radius:24px;padding:19px}
+  .vhead{display:flex;gap:15px}
+  .pimg{width:92px;height:92px;border-radius:19px;flex:0 0 auto;display:grid;place-items:center;font-size:44px;
+    background:linear-gradient(150deg,#eef2ff,#dbe4ff);box-shadow:inset 0 2px 6px rgba(255,255,255,.9),0 6px 14px rgba(46,91,255,.15);position:relative;overflow:hidden}
+  .pinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+  .cat{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--b500);font-weight:800}
+  .pname{font-size:20px;font-weight:780;letter-spacing:-.02em;line-height:1.12;color:var(--ink);text-wrap:balance}
+  .conf{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);font-family:var(--mono);font-weight:600}
+  .cbar{flex:1;height:6px;border-radius:4px;background:#e7ecfb;overflow:hidden;max-width:120px}
+  .cbar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--b500));width:0;animation:fill 1s .2s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes fill{to{width:var(--w)}}
+
+  .vline{margin-top:16px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:linear-gradient(135deg,#f3f6ff,#eaf0ff);border:1px solid #e2e9ff}
+  .vpill{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:8px 13px;border-radius:12px;white-space:nowrap;flex:0 0 auto;color:#fff}
+  .v-buy{background:linear-gradient(135deg,#12c48b,#0e9e97)} .v-skip{background:linear-gradient(135deg,#ff5d73,#e0417a)}
+  .v-wait{background:linear-gradient(135deg,#f7b32b,#f08a3c)} .v-cheap{background:linear-gradient(135deg,var(--cyan),var(--b500))}
+  .v-alt{background:linear-gradient(135deg,var(--b500),var(--violet))}
+  .vtext{font-size:14.5px;font-weight:650;line-height:1.25;color:var(--ink);text-wrap:balance}
+
+  .prow{display:flex;align-items:flex-end;justify-content:space-between;margin-top:16px;gap:12px}
+  .plab{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+  .pval{font-family:var(--mono);font-size:31px;font-weight:800;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .pval small{font-size:14px;color:var(--ink3);font-weight:600}
+  .pat{font-size:12px;color:var(--ink2)}
+  .cta{padding:15px 20px;border-radius:16px;border:0;cursor:pointer;color:#fff;font-weight:750;font-size:14px;white-space:nowrap;
+    background:linear-gradient(135deg,var(--b500),var(--violet));box-shadow:0 14px 30px -8px rgba(46,91,255,.7);transition:transform .25s cubic-bezier(.2,.9,.3,1.4)}
+  .cta:hover{transform:translateY(-2px)}
+
+  .sech{display:flex;align-items:center;justify-content:space-between;margin:6px 2px -2px}
+  .sech .t{font-size:13px;font-weight:750;color:#fff}
+  .sech .c{font-size:11px;color:var(--onblue2);font-family:var(--mono)}
+
+  .carousel{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+  .carousel::-webkit-scrollbar{display:none}
+  .pcard{flex:0 0 160px;border-radius:20px;padding:11px;background:var(--card);box-shadow:var(--sh);display:flex;flex-direction:column;gap:9px;cursor:pointer;transition:transform .3s cubic-bezier(.2,.9,.3,1.3)}
+  .pcard:hover{transform:translateY(-4px)}
+  .pcard .thumb{height:98px;border-radius:14px;background:linear-gradient(150deg,#eef2ff,#dce4ff);display:grid;place-items:center;font-size:36px;position:relative;overflow:hidden}
+  .tag{position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:8px;color:#fff}
+  .t-exact{background:linear-gradient(135deg,#12c48b,#0e9e97)} .t-dupe{background:linear-gradient(135deg,var(--violet),#b06bff)}
+  .t-budget{background:linear-gradient(135deg,var(--cyan),var(--b500))} .t-upgrade{background:linear-gradient(135deg,var(--b500),var(--violet))}
+  .t-similar{background:#8a95bd}
+  .pcard .nm{font-size:12.5px;font-weight:650;line-height:1.2;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+  .pcard .mrow{display:flex;align-items:center;justify-content:space-between}
+  .pcard .pr{font-family:var(--mono);font-weight:800;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .pcard .rt{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--ink2);font-weight:600}
+  .pcard .ret{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink3);font-weight:600}
+  .tdot{width:6px;height:6px;border-radius:50%}
+  .pcard .why{font-size:10.5px;color:var(--b500);font-weight:650;line-height:1.2}
+
+  .expert{border-radius:22px;padding:17px;background:var(--card);box-shadow:var(--sh);display:flex;flex-direction:column;gap:14px}
+  .bar .bl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink2);margin-bottom:5px;font-weight:600}
+  .bar .bl b{color:var(--ink);font-family:var(--mono)}
+  .bar .tk{height:8px;border-radius:5px;background:#e9edfb;overflow:hidden}
+  .bar .tk i{display:block;height:100%;border-radius:5px;width:0;animation:fill 1s .1s cubic-bezier(.2,.8,.2,1) forwards}
+  .reason{font-size:13.5px;color:#37436e;line-height:1.55}
+  .reason b{color:var(--ink)}
+  .whorow{display:flex;gap:10px}
+  .who{flex:1;border-radius:14px;padding:11px;font-size:11.5px;line-height:1.35;color:#37436e}
+  .who .h{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+  .who.buy{background:#e7f9f1} .who.buy .h{color:#0e9e77}
+  .who.avoid{background:#ffeef1} .who.avoid .h{color:#e0417a}
+
+  .flag{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:#8a2740;padding:11px 13px;border-radius:14px;background:#ffeef1;font-weight:500}
+  .flag .x{color:var(--bad);flex:0 0 auto}
+
+  .fu-grid{display:flex;gap:9px;flex-wrap:wrap}
+  .fu{flex:1 1 44%;display:flex;align-items:center;gap:8px;padding:12px;border-radius:15px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:12px;color:var(--onblue);font-weight:500}
+  .fu .e{font-size:16px;color:var(--cyan)}
+  .disc{font-size:11px;color:var(--onblue3);text-align:center;font-style:italic;padding:4px}
+
+  .share{border-radius:24px;padding:20px;position:relative;overflow:hidden;color:#fff;
+    background:linear-gradient(135deg,#1a3fd0,#5b34e0 55%,#a24bd8);box-shadow:0 26px 60px -22px rgba(91,52,224,.8)}
+  .share::before{content:"";position:absolute;top:-50%;right:-15%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(56,225,255,.6),transparent 65%)}
+  .share .k{position:relative;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85;font-weight:700;margin-bottom:9px}
+  .share .big{position:relative;display:flex;align-items:baseline;gap:11px}
+  .share .big .v{font-family:var(--mono);font-size:40px;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.2)}
+  .share .big .l{font-size:15px;font-weight:650}
+  .share .foot{position:relative;display:flex;align-items:center;justify-content:space-between;margin-top:15px;font-size:11px;opacity:.9}
+  .share .foot .g{display:flex;align-items:center;gap:6px;font-weight:800}
+
+  .ghost{width:100%;padding:14px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;font-weight:650;font-size:13.5px;cursor:pointer;backdrop-filter:blur(8px);transition:.2s}
+  .ghost:hover{background:rgba(255,255,255,.16)}
+
+  .notes{flex:0 0 300px;display:flex;flex-direction:column;gap:20px;padding-top:24px}
+  .note{border-left:2px solid var(--cyan);padding:2px 0 2px 16px}
+  .note h4{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:7px}
+  .note p{font-size:13.5px;color:var(--onblue2);line-height:1.6}
+  .note p b{color:#fff;font-weight:650}
+  @media(max-width:770px){.notes{display:none}}
+  .footn{font-size:12px;color:var(--onblue3);text-align:center;max-width:540px;line-height:1.6}
+  .footn code{font-family:var(--mono);color:var(--cyan)}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+
+<div class="orbs"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+<div class="stage">
+  <div class="lede">
+    <div class="brand"><span class="mk"></span><h1>SEARCHLY</h1></div>
+    <div class="eyebrow">The AI buying engine</div>
+    <p class="tag">Point your camera at anything. Searchly tells you <b>what it is, where it's cheapest, and whether it's actually worth buying</b> — a decision, not ten blue links.</p>
+  </div>
+
+  <div class="cols">
+    <div class="phone"><div class="screen">
+      <div class="notch"></div>
+      <div class="status"><span>9:41</span><span class="r">◧ ◫ ▮▮▮</span></div>
+      <div class="app">
+        <div class="topbar">
+          <div class="b"><span class="mk"></span><span>Searchly</span></div>
+          <div style="display:flex;gap:8px"><div class="iconbtn">◪</div><div class="iconbtn">⚙</div></div>
+        </div>
+        <div class="searchbar"><span class="k">⌕</span> Search anything you want to buy…</div>
+        <div class="camera" id="camera" role="button" tabindex="0" aria-label="Scan a product">
+          <div class="scanline"></div>
+          <div class="reticle"><span></span><span></span><span></span><span></span></div>
+          <div class="obj" id="cam-obj">👟</div>
+          <div class="hint">Tap to scan · point at any product</div>
+        </div>
+        <div class="chips" id="chips">
+          <div class="chip on" data-mode="worthit"><span class="e">⚖️</span>Worth It</div>
+          <div class="chip" data-mode="cheaper"><span class="e">💸</span>Cheaper</div>
+          <div class="chip" data-mode="dupes"><span class="e">🎭</span>Dupes</div>
+          <div class="chip" data-mode="realfake"><span class="e">🔎</span>Real / Fake</div>
+          <div class="chip" data-mode="better"><span class="e">⭐</span>Better</div>
+          <div class="chip" data-mode="find"><span class="e">🎯</span>Find It</div>
+        </div>
+        <div class="result show" id="result"></div>
+      </div>
+      <div class="scan" id="scan">
+        <div class="orbwrap"><div class="morph"></div><div class="morph two"></div><div class="core" id="core">0%</div></div>
+        <div class="steps" id="steps">
+          <div class="step" data-s="0"><span class="tk">◎</span> Scanning visual details</div>
+          <div class="step" data-s="1"><span class="tk">◎</span> Identifying the product</div>
+          <div class="step" data-s="2"><span class="tk">◎</span> Searching 8 trusted sources</div>
+          <div class="step" data-s="3"><span class="tk">◎</span> Comparing live prices</div>
+          <div class="step" data-s="4"><span class="tk">◎</span> Building your verdict</div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="notes">
+      <div class="note"><h4>The wedge</h4><p>Every rival stops at <b>matches</b>. Searchly ends at a <b>verdict</b> — Buy, Skip, Wait, or Find Cheaper. That's the product.</p></div>
+      <div class="note"><h4>The moat</h4><p>Each scan fires a <b>query battery</b> tuned to the mode × category — the way an expert actually searches — then reasons over the pile. Tap the chips to watch it re-decide.</p></div>
+      <div class="note"><h4>The loop</h4><p>The <b>share card</b> is engineered to be screenshotted — "AI saved me £42." Free growth built into every result.</p></div>
+      <div class="note"><h4>Honesty</h4><p>Low confidence never bluffs — it asks for a better photo. Real/Fake estimates and requests verifying angles; it never says "definitely".</p></div>
+    </div>
+  </div>
+  <p class="footn">Interactive concept — tap the camera to replay the scan, tap any mode chip to re-run the decision. Every card is rendered from the same shape the <code>/api/decide</code> engine returns.</p>
+</div>
+
+<script>
+const S={
+ worthit:{obj:"🎧",cat:"Electronics · Headphones",name:"Sony WH-1000XM5",conf:94,vclass:"v-buy",vlabel:"Buy",vtext:"Buy it — class-leading ANC, and it's £70 under launch.",price:"279",at:"Amazon · in stock",cta:"View Best Deal",value:83,quality:91,
+  reason:"Across <b>Reddit, RTINGS and Which?</b> the XM5 is the consensus pick for noise cancelling under £300. At <b>£279</b> you're below the 90-day average of £312.",buy:"Commuters who want the best ANC, no fuss.",avoid:"Bass-heads who need a folding case.",flags:["Non-folding — bulkier case than the XM4"],
+  cards:[["🎧","exact","Sony WH-1000XM5 Black","£279","4.7","£33 below avg","Amazon","#12c48b"],["🎧","exact","Sony WH-1000XM5","£289","4.8","2yr warranty","John Lewis","#12c48b"],["🎧","upgrade","Bose QC Ultra","£349","4.6","Comfier, pricier","Currys","#12c48b"],["🎧","budget","Sony WH-1000XM4","£189","4.7","90% as good, £90 less","Argos","#12c48b"]],
+  share:{v:"BUY",l:"Worth it — best price locked",k:"Searchly verdict"}},
+ cheaper:{obj:"👟",cat:"Trainers · Nike",name:"Nike Air Max 90 'Infrared'",conf:88,vclass:"v-cheap",vlabel:"Find cheaper",vtext:"Don't pay £135 — the same colourway is £93 at two trusted sellers.",price:"93",at:"size? · in stock",cta:"Grab it £93",value:79,quality:74,
+  reason:"The identical <b>'Infrared' colourway</b> is £135 on Nike but <b>£93</b> at size? and JD — both official stockists, no authenticity risk. Average across 9 UK sellers is £118.",buy:"Anyone buying the exact pair — grab the cheaper listing.",avoid:"Nobody — pure price win.",flags:["£71 listing flagged: unverified seller, no returns"],
+  cards:[["👟","exact","Air Max 90 Infrared","£93","4.6","£25 below avg","size?","#12c48b"],["👟","exact","Air Max 90 Infrared","£97","4.7","Free returns","JD Sports","#12c48b"],["👟","exact","Air Max 90 (Nike)","£135","4.8","RRP — skip","Nike","#12c48b"],["👟","similar","Air Max 90 lookalike","£71","3.9","⚠ unverified","Marketplace","#ff5d73"]],
+  share:{v:"£42",l:"AI found it cheaper — saved £42",k:"Searchly saved"}},
+ dupes:{obj:"🛋️",cat:"Furniture · Designer",name:"Togo-style Sofa",conf:81,vclass:"v-cheap",vlabel:"Dupe found",vtext:"The £3,400 look for £499 — 3 near-identical dupes found.",price:"499",at:"Dunelm · in stock",cta:"See the dupe",value:88,quality:66,
+  reason:"The original Ligne Roset Togo runs <b>£3,400+</b>. Reddit's r/furniture rates the <b>Dunelm and Made ripples</b> closest. Trade-off: lower foam density over 5+ years.",buy:"Renters & first flats who want the look now.",avoid:"Buyers who want 15-year foam.",flags:["Dupes use lower-density foam — sags faster"],
+  cards:[["🛋️","dupe","Ripple Floor Sofa","£499","4.4","Closest silhouette","Dunelm","#12c48b"],["🛋️","dupe","Quilted Lounge Sofa","£640","4.5","£2.7k less","Made","#38e1ff"],["🛋️","dupe","Marshmallow Modular","£420","4.2","Budget dupe","Wayfair","#38e1ff"],["🛋️","upgrade","Ligne Roset Togo","£3,400","4.9","The original","Selfridges","#12c48b"]],
+  share:{v:"£2,901",l:"Same look for £2,901 less",k:"Searchly dupe"}},
+ realfake:{obj:"⌚",cat:"Watches · Luxury",name:"Omega Seamaster 300M",conf:72,isFake:true,vclass:"v-wait",vlabel:"Inconclusive",vtext:"Likely genuine, but I can't confirm from one photo.",estPct:72,cta:"Add photos",
+  correct:["Wave dial pattern spacing looks correct","Applied logo, not printed","Bracelet taper matches reference"],cannot:["Serial engraving depth (need macro)","Movement / caseback interior","Bezel lume under UV"],
+  reason:"The dial and handset are consistent with a genuine 300M, but the crown guards and date font are the usual tells and <b>can't be judged at this angle</b>. Reddit's r/watches legit-check flags these exact points.",
+  followups:[["🔍","Caseback engraving"],["🔢","Serial number macro"],["🧵","Clasp & bracelet"],["💡","Bezel lume (UV)"]],
+  share:{v:"72%",l:"AI authenticity check",k:"Real or fake?"}},
+ better:{obj:"📱",cat:"Electronics · Phones",name:"iPhone 15",conf:90,vclass:"v-alt",vlabel:"Better exists",vtext:"Skip the 15 — the 15 Pro is only £90 more and worth it.",price:"699",at:"Amazon",cta:"See the Pro",value:71,quality:85,
+  reason:"For <b>£90 more</b> the 15 Pro adds the A17 chip, titanium and the Action button — <b>Wirecutter and MKBHD</b> call it the better long-term hold.",buy:"Light users who upgrade yearly — the 15 is plenty.",avoid:"Anyone keeping it 3+ years — stretch to the Pro.",flags:[],
+  cards:[["📱","upgrade","iPhone 15 Pro 128GB","£789","4.8","Best long-term pick","Amazon","#12c48b"],["📱","exact","iPhone 15 128GB","£699","4.7","Fine, ages faster","Argos","#12c48b"],["📱","budget","iPhone 14 128GB","£579","4.7","Best value now","Currys","#12c48b"],["📱","similar","Pixel 8","£549","4.5","Better camera AI","John Lewis","#12c48b"]],
+  share:{v:"+£90",l:"AI says stretch to the Pro",k:"Searchly verdict"}},
+ find:{obj:"👟",cat:"Trainers · Nike",name:"Air Max 90 OG 'Infrared'",conf:96,vclass:"v-buy",vlabel:"Identified",vtext:"Nike Air Max 90 OG 'Infrared' — here's where to buy it.",price:"93",at:"size? · cheapest of 9",cta:"View Best Deal",value:80,quality:78,
+  reason:"Matched with <b>96% confidence</b> from the sole unit and heel TPU — the 2020 OG 'Infrared' retro. Nine UK sellers stock it, £93–£150.",buy:"You know the pair — go to the cheapest trusted seller.",avoid:"—",flags:[],
+  cards:[["👟","exact","Air Max 90 Infrared","£93","4.6","Cheapest trusted","size?","#12c48b"],["👟","exact","Air Max 90 Infrared","£97","4.7","Free returns","JD Sports","#12c48b"],["👟","similar","Air Max 90 Triple White","£110","4.6","Similar model","Schuh","#12c48b"]],
+  share:{v:"96%",l:"Identified — Air Max 90",k:"Searchly found it"}},
+};
+const E=h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild};
+let d=0;
+function render(mode){
+  const x=S[mode]; document.getElementById('cam-obj').textContent=x.obj;
+  const R=document.getElementById('result'); R.innerHTML=''; d=0;
+  const step=n=>{n.style.animationDelay=(d++*0.07)+'s';n.classList.add('rise');return n};
+  const price=x.price?`<div class="prow"><div><div class="plab">Best price</div><div class="pval">£${x.price}</div><div class="pat">${x.at}</div></div><button class="cta">${x.cta} →</button></div>`
+    :`<div class="prow"><div><div class="plab">Authenticity</div><div class="pval">${x.estPct}<small>% est.</small></div><div class="pat">image-based estimate</div></div><button class="cta">${x.cta} →</button></div>`;
+  R.appendChild(step(E(`<div class="verdict"><div class="inner">
+    <div class="vhead"><div class="pimg">${x.obj}</div><div class="pinfo">
+      <div class="cat">${x.cat}</div><div class="pname">${x.name}</div>
+      <div class="conf">${x.conf}% match <span class="cbar"><i style="--w:${x.conf}%"></i></span></div></div></div>
+    <div class="vline"><span class="vpill ${x.vclass}">${x.vlabel}</span><span class="vtext">${x.vtext}</span></div>
+    ${price}</div></div>`)));
+  if(x.isFake){
+    R.appendChild(step(E(`<div class="expert"><div class="reason">${x.reason}</div>
+      <div class="whorow"><div class="who buy"><div class="h">Looks correct</div>${x.correct.map(c=>'• '+c).join('<br>')}</div>
+      <div class="who avoid"><div class="h">Can't verify</div>${x.cannot.map(c=>'• '+c).join('<br>')}</div></div></div>`)));
+    R.appendChild(step(E(`<div class="sech"><span class="t">📸 Send these to narrow it down</span></div>`)));
+    R.appendChild(step(E(`<div class="fu-grid">${x.followups.map(f=>`<div class="fu"><span class="e">${f[0]}</span>${f[1]}</div>`).join('')}</div>`)));
+    R.appendChild(step(E(`<div class="disc">Image-based estimate only — expert verification may be needed.</div>`)));
+  } else {
+    R.appendChild(step(E(`<div class="sech"><span class="t">${mode==='dupes'?'Dupes & the original':mode==='cheaper'?'Cheapest trusted sellers':mode==='better'?'Better alternatives':'Matches & options'}</span><span class="c">${x.cards.length} found</span></div>`)));
+    const car=E('<div class="carousel"></div>');
+    x.cards.forEach(c=>car.appendChild(E(`<div class="pcard"><div class="thumb"><span class="tag t-${c[1]}">${c[1]}</span>${c[0]}</div>
+      <div class="nm">${c[2]}</div><div class="mrow"><span class="pr">${c[3]}</span><span class="rt">★ ${c[4]}</span></div>
+      <div class="ret"><span class="tdot" style="background:${c[7]}"></span>${c[6]}</div><div class="why">${c[5]}</div></div>`)));
+    R.appendChild(step(car));
+    R.appendChild(step(E(`<div class="expert">
+      <div class="bar"><div class="bl"><span>Value for money</span><b>${x.value}/100</b></div><div class="tk"><i style="width:${x.value}%;background:linear-gradient(90deg,#38e1ff,#2e5bff)"></i></div></div>
+      <div class="bar"><div class="bl"><span>Quality</span><b>${x.quality}/100</b></div><div class="tk"><i style="width:${x.quality}%;background:linear-gradient(90deg,#12c48b,#38e1ff)"></i></div></div>
+      <div class="reason">${x.reason}</div>
+      <div class="whorow"><div class="who buy"><div class="h">Buy if</div>${x.buy}</div><div class="who avoid"><div class="h">Skip if</div>${x.avoid}</div></div></div>`)));
+    if(x.flags&&x.flags.length) x.flags.forEach(f=>R.appendChild(step(E(`<div class="flag"><span class="x">⚠</span>${f}</div>`))));
+  }
+  R.appendChild(step(E(`<div class="share"><div class="k">${x.share.k}</div><div class="big"><span class="v">${x.share.v}</span><span class="l">${x.share.l}</span></div>
+    <div class="foot"><span class="g"><span style="width:14px;height:14px;border-radius:5px;background:linear-gradient(135deg,#38e1ff,#2e5bff);display:inline-block"></span> Searchly</span><span>Point. Know. Buy smarter.</span></div></div>`)));
+  R.appendChild(step(E(`<button class="ghost">↗ Share this result</button>`)));
+}
+let scanning=false;
+function runScan(mode){
+  if(scanning)return; scanning=true;
+  const scan=document.getElementById('scan'),steps=[...document.querySelectorAll('.step')],core=document.getElementById('core'),R=document.getElementById('result');
+  R.classList.remove('show'); steps.forEach(s=>s.className='step'); scan.classList.add('show');
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches, total=reduce?250:2200, per=total/steps.length, start=Date.now();
+  const t=setInterval(()=>{const p=Math.min(1,(Date.now()-start)/total); core.textContent=Math.round(p*100)+'%'; if(p>=1)clearInterval(t)},reduce?120:40);
+  steps.forEach((s,i)=>setTimeout(()=>{s.className='step active'; steps.forEach((o,j)=>{if(j<i)o.className='step done'})},per*i));
+  setTimeout(()=>{steps.forEach(s=>s.className='step done'); setTimeout(()=>{scan.classList.remove('show'); render(mode); R.classList.add('show'); scanning=false},reduce?60:280)},total);
+}
+document.getElementById('chips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;document.querySelectorAll('.chip').forEach(k=>k.classList.remove('on'));c.classList.add('on');runScan(c.dataset.mode)});
+const cam=document.getElementById('camera');
+cam.addEventListener('click',()=>runScan(document.querySelector('.chip.on').dataset.mode));
+cam.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cam.click()}});
+render('worthit');
+</script>

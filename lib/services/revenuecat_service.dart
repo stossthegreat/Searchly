@@ -4,7 +4,7 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'usage_service.dart';
 
-/// RevenueCat integration for Gobly Pro subscriptions.
+/// RevenueCat integration for Searchly Pro subscriptions.
 ///
 /// Setup checklist (see /docs/REVENUECAT_SETUP in the repo root or the
 /// step-by-step guide provided by Claude):
@@ -14,8 +14,8 @@ import 'usage_service.dart';
 ///        - Copy the PUBLIC "Google Play Store" key → androidApiKey below
 ///
 ///   2. In RevenueCat → Products:
-///        - Create product `gobly_pro_monthly` (link to App Store + Play)
-///        - Create product `gobly_pro_annual`  (link to App Store + Play)
+///        - Create product `searchly_pro_monthly` (link to App Store + Play)
+///        - Create product `searchly_pro_annual`  (link to App Store + Play)
 ///
 ///   3. In RevenueCat → Entitlements:
 ///        - Create entitlement with identifier exactly: `pro`
@@ -23,8 +23,8 @@ import 'usage_service.dart';
 ///
 ///   4. In RevenueCat → Offerings:
 ///        - The `default` offering should contain two packages:
-///            * `$rc_monthly` → gobly_pro_monthly
-///            * `$rc_annual`  → gobly_pro_annual
+///            * `$rc_monthly` → searchly_pro_monthly
+///            * `$rc_annual`  → searchly_pro_annual
 ///
 /// The app reads whatever offering RevenueCat marks as current, so you can
 /// change pricing/trials later without shipping a new build.
@@ -116,10 +116,10 @@ class RevenueCatService extends ChangeNotifier {
     }
   }
 
-  /// Purchase a package. Returns GoblyPurchaseResult with outcome.
-  Future<GoblyPurchaseResult> purchase(Package package) async {
+  /// Purchase a package. Returns SearchlyPurchaseResult with outcome.
+  Future<SearchlyPurchaseResult> purchase(Package package) async {
     if (!_initialized) {
-      return GoblyPurchaseResult.notConfigured;
+      return SearchlyPurchaseResult.notConfigured;
     }
     try {
       final customerInfo = await Purchases.purchasePackage(package);
@@ -127,37 +127,37 @@ class RevenueCatService extends ChangeNotifier {
           customerInfo.entitlements.active.containsKey(entitlementId);
       if (active) {
         await UsageService.instance.setPro(true);
-        return GoblyPurchaseResult.success;
+        return SearchlyPurchaseResult.success;
       }
-      return GoblyPurchaseResult.notEntitled;
+      return SearchlyPurchaseResult.notEntitled;
     } on PlatformException catch (e) {
       final code = PurchasesErrorHelper.getErrorCode(e);
       if (code == PurchasesErrorCode.purchaseCancelledError) {
-        return GoblyPurchaseResult.cancelled;
+        return SearchlyPurchaseResult.cancelled;
       }
       debugPrint('⚠️ RevenueCat purchase error: $code / ${e.message}');
-      return GoblyPurchaseResult.error;
+      return SearchlyPurchaseResult.error;
     } catch (e) {
       debugPrint('⚠️ RevenueCat purchase error: $e');
-      return GoblyPurchaseResult.error;
+      return SearchlyPurchaseResult.error;
     }
   }
 
   /// Restores prior purchases from the user's App Store / Play account.
-  Future<GoblyRestoreResult> restore() async {
-    if (!_initialized) return GoblyRestoreResult.notConfigured;
+  Future<SearchlyRestoreResult> restore() async {
+    if (!_initialized) return SearchlyRestoreResult.notConfigured;
     try {
       final info = await Purchases.restorePurchases();
       await _applyCustomerInfo(info);
       final active = info.entitlements.active.containsKey(entitlementId);
-      return active ? GoblyRestoreResult.restored : GoblyRestoreResult.nothingToRestore;
+      return active ? SearchlyRestoreResult.restored : SearchlyRestoreResult.nothingToRestore;
     } catch (e) {
       debugPrint('⚠️ RevenueCat restore error: $e');
-      return GoblyRestoreResult.error;
+      return SearchlyRestoreResult.error;
     }
   }
 }
 
-enum GoblyPurchaseResult { success, cancelled, notEntitled, notConfigured, error }
+enum SearchlyPurchaseResult { success, cancelled, notEntitled, notConfigured, error }
 
-enum GoblyRestoreResult { restored, nothingToRestore, notConfigured, error }
+enum SearchlyRestoreResult { restored, nothingToRestore, notConfigured, error }

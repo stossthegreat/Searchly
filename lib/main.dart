@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'theme/app_theme.dart';
+import 'buy/screens/scan_home_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/planner_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -40,7 +41,7 @@ void main() async {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light, // dark buying-engine UI
       ),
     );
 
@@ -76,7 +77,7 @@ void main() async {
       return const SizedBox.shrink();
     };
 
-    runApp(GoblyApp(
+    runApp(SearchlyApp(
       showOnboarding: !onboardingSeen,
       firebaseReady: firebaseReady,
     ));
@@ -128,11 +129,11 @@ void main() async {
   }
 }
 
-class GoblyApp extends StatelessWidget {
+class SearchlyApp extends StatelessWidget {
   final bool showOnboarding;
   final bool firebaseReady;
 
-  const GoblyApp({
+  const SearchlyApp({
     super.key,
     required this.showOnboarding,
     required this.firebaseReady,
@@ -141,34 +142,13 @@ class GoblyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gobly',
+      title: 'Searchly',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
       navigatorObservers:
           firebaseReady ? [AnalyticsService.instance.observer] : [],
-      home: showOnboarding ? const _OnboardingGate() : const AppShell(),
-    );
-  }
-}
-
-/// Shows onboarding once, then replaces itself with the main app shell.
-class _OnboardingGate extends StatelessWidget {
-  const _OnboardingGate();
-
-  @override
-  Widget build(BuildContext context) {
-    return OnboardingScreen(
-      onComplete: () {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => const AppShell(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 500),
-          ),
-        );
-      },
+      // Searchly buying engine is now the app entry point.
+      home: const ScanHomeScreen(),
     );
   }
 }

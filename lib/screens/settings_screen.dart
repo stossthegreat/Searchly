@@ -286,7 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildLinkRow(
                     icon: Icons.info_outline_rounded,
                     color: AppColors.textSecondary,
-                    title: 'About Gobly',
+                    title: 'About Searchly',
                     trailing: 'v0.1.0',
                     onTap: _showAboutSheet,
                   ),
@@ -1332,7 +1332,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 18),
               const Text(
-                'Gobly',
+                'Searchly',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
@@ -1429,7 +1429,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Sign out?'),
         content: const Text(
-          'Gobly is local-only right now — there is no cloud account to sign out of. Cloud sign-in is coming soon. For now, this just closes the screen.',
+          'Searchly is local-only right now — there is no cloud account to sign out of. Cloud sign-in is coming soon. For now, this just closes the screen.',
         ),
         actions: [
           TextButton(
@@ -1479,16 +1479,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const _termsText = 'TERMS OF SERVICE\n'
       'Last updated: April 2026\n\n'
       '1. ACCEPTANCE OF TERMS\n'
-      'By downloading, installing, or using the Gobly application '
+      'By downloading, installing, or using the Searchly application '
       '("the App"), you agree to be bound by these Terms of Service '
       '("Terms"). If you do not agree to these Terms, do not use the App.\n\n'
       '2. DESCRIPTION OF SERVICE\n'
-      'Gobly is a recipe discovery and meal planning application that '
+      'Searchly is a recipe discovery and meal planning application that '
       'uses artificial intelligence to help users find recipes, plan '
       'weekly meals, and generate grocery lists. The App provides access '
       'to recipes sourced from third-party publishers via web search.\n\n'
       '3. USER ACCOUNTS & DATA\n'
-      'Gobly does not currently require account registration. Your '
+      'Searchly does not currently require account registration. Your '
       'profile information, saved recipes, meal plans, cookbooks, and '
       'grocery lists are stored locally on your device. You are '
       'responsible for maintaining the security of your device and data.\n\n'
@@ -1504,7 +1504,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'Recipes displayed in the App are sourced from third-party '
       'publishers and food websites. These recipes remain the '
       'intellectual property of their respective creators and publishers. '
-      'Gobly provides links and attribution to original sources. We do '
+      'Searchly provides links and attribution to original sources. We do '
       'not claim ownership of any third-party recipe content.\n\n'
       '6. AI-GENERATED CONTENT\n'
       'The App uses artificial intelligence (OpenAI) to assist with '
@@ -1522,14 +1522,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'of harmful components.\n\n'
       '8. LIMITATION OF LIABILITY\n'
       'To the maximum extent permitted by applicable law, in no event '
-      'shall Gobly, its developers, or affiliates be liable for any '
+      'shall Searchly, its developers, or affiliates be liable for any '
       'indirect, incidental, special, consequential, or punitive damages, '
       'including but not limited to loss of data, loss of profits, or '
       'personal injury arising from your use of the App. Our total '
       'liability shall not exceed the amount you paid for the App in '
       'the twelve months preceding the claim.\n\n'
       '9. FOOD SAFETY & ALLERGIES\n'
-      'While Gobly respects allergy and dietary preferences you set in '
+      'While Searchly respects allergy and dietary preferences you set in '
       'your profile, we cannot guarantee that every recipe suggestion '
       'will be free of allergens or meet specific dietary requirements. '
       'Always read the full ingredient list of any recipe before '
@@ -1550,11 +1550,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'with the laws of the United Kingdom, without regard to conflict '
       'of law principles.\n\n'
       '13. CONTACT\n'
-      'For questions about these Terms, contact us at support@gobly.app.';
+      'For questions about these Terms, contact us at support@searchly.app.';
 
   static const _privacyText = 'PRIVACY POLICY\n'
       'Last updated: April 2026\n\n'
-      'Gobly ("we", "our", "the App") is committed to protecting your '
+      'Searchly ("we", "our", "the App") is committed to protecting your '
       'privacy. This Privacy Policy explains what data we collect, how '
       'we use it, and your rights regarding your personal information.\n\n'
       '1. DATA WE COLLECT\n\n'
@@ -1621,17 +1621,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'planning, or voice input — the App functions in manual mode '
       'without sending any data to our servers\n\n'
       '7. CHILDREN\'S PRIVACY\n'
-      'Gobly is not directed at children under 13. We do not knowingly '
+      'Searchly is not directed at children under 13. We do not knowingly '
       'collect personal information from children. If you are a parent '
       'or guardian and believe your child has provided us with personal '
-      'information, please contact us at privacy@gobly.app.\n\n'
+      'information, please contact us at privacy@searchly.app.\n\n'
       '8. CHANGES TO THIS POLICY\n'
       'We may update this Privacy Policy from time to time. We will '
       'notify you of material changes through the App. Your continued '
       'use of the App after changes constitutes acceptance.\n\n'
       '9. CONTACT US\n'
       'For privacy-related questions or requests:\n'
-      'Email: privacy@gobly.app\n\n'
+      'Email: privacy@searchly.app\n\n'
       '10. GDPR & UK DATA PROTECTION\n'
       'If you are located in the European Economic Area or the United '
       'Kingdom, you have additional rights under GDPR / UK GDPR '
@@ -1641,5 +1641,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'and we do not maintain server-side user accounts or profiles, '
       'you exercise these rights directly through the App\'s Settings. '
       'For any requests we cannot fulfil through the App, contact '
-      'privacy@gobly.app.';
+      'privacy@searchly.app.';
 }

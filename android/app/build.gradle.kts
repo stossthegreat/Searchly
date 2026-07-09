@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.gobly.gobly"
+    namespace = "com.searchly.app"
     compileSdk = maxOf(flutter.compileSdkVersion, 35)
     ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.gobly.gobly"
+        applicationId = "com.searchly.app"
         minSdk = flutter.minSdkVersion
         targetSdk = maxOf(flutter.targetSdkVersion, 35)
         versionCode = flutter.versionCode

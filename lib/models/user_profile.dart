@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// Represents everything Gobly knows about the user.
+/// Represents everything Searchly knows about the user.
 /// This is sent as context on every agent query to personalize results.
 class UserProfile {
   final String name;

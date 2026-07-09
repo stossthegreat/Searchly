@@ -58,21 +58,21 @@ class _PaywallScreenState extends State<PaywallScreen> {
     setState(() => _purchasing = false);
 
     switch (result) {
-      case GoblyPurchaseResult.success:
-        _showSnack('Welcome to Gobly Pro!');
+      case SearchlyPurchaseResult.success:
+        _showSnack('Welcome to Searchly Pro!');
         Navigator.of(context).pop(true);
         break;
-      case GoblyPurchaseResult.cancelled:
+      case SearchlyPurchaseResult.cancelled:
         // Silent — user backed out.
         break;
-      case GoblyPurchaseResult.notEntitled:
+      case SearchlyPurchaseResult.notEntitled:
         _showSnack('Purchase completed but entitlement not active yet. '
             'Try Restore Purchase.');
         break;
-      case GoblyPurchaseResult.notConfigured:
+      case SearchlyPurchaseResult.notConfigured:
         _showSnack('Payments aren\'t configured in this build.');
         break;
-      case GoblyPurchaseResult.error:
+      case SearchlyPurchaseResult.error:
         _showSnack('Purchase failed. Please try again.');
         break;
     }
@@ -83,17 +83,17 @@ class _PaywallScreenState extends State<PaywallScreen> {
     final result = await RevenueCatService.instance.restore();
     if (!mounted) return;
     switch (result) {
-      case GoblyRestoreResult.restored:
+      case SearchlyRestoreResult.restored:
         _showSnack('Pro restored. Welcome back!');
         Navigator.of(context).pop(true);
         break;
-      case GoblyRestoreResult.nothingToRestore:
+      case SearchlyRestoreResult.nothingToRestore:
         _showSnack('No previous purchases found on this account.');
         break;
-      case GoblyRestoreResult.notConfigured:
+      case SearchlyRestoreResult.notConfigured:
         _showSnack('Payments aren\'t configured in this build.');
         break;
-      case GoblyRestoreResult.error:
+      case SearchlyRestoreResult.error:
         _showSnack('Restore failed. Please try again.');
         break;
     }
@@ -498,8 +498,8 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 const SizedBox(height: 14),
                 Text(
                   type == 'terms'
-                      ? 'By subscribing to Gobly Pro you agree to the terms outlined in our full Terms of Service accessible from the Settings screen. Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period. You can manage or cancel your subscription in your device\'s app store settings at any time.'
-                      : 'Gobly collects your dietary preferences and recipe data locally on your device. When using AI features, your query and profile context are sent to our secure backend over HTTPS. Audio recordings for voice search are processed and immediately discarded. We do not sell your data. Full privacy policy is accessible from the Settings screen.',
+                      ? 'By subscribing to Searchly Pro you agree to the terms outlined in our full Terms of Service accessible from the Settings screen. Subscriptions auto-renew unless cancelled at least 24 hours before the end of the current period. You can manage or cancel your subscription in your device\'s app store settings at any time.'
+                      : 'Searchly collects your dietary preferences and recipe data locally on your device. When using AI features, your query and profile context are sent to our secure backend over HTTPS. Audio recordings for voice search are processed and immediately discarded. We do not sell your data. Full privacy policy is accessible from the Settings screen.',
                   style: const TextStyle(
                     fontSize: 13,
                     color: AppColors.textPrimary,

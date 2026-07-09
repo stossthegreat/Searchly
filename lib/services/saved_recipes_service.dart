@@ -9,7 +9,7 @@ class SavedRecipesService extends ChangeNotifier {
   static final SavedRecipesService _instance = SavedRecipesService._();
   static SavedRecipesService get instance => _instance;
 
-  static const _storageKey = 'gobly_saved_recipes_v1';
+  static const _storageKey = 'searchly_saved_recipes_v1';
 
   List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> get recipes => List.unmodifiable(_recipes);
