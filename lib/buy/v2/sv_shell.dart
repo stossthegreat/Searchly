@@ -40,29 +40,39 @@ class _SearchlyShellState extends State<SearchlyShell> {
   }
 
   Widget _pillNav() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 26),
-      child: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-            child: Container(
-              padding: const EdgeInsets.all(7),
-              decoration: BoxDecoration(
-                color: const Color(0xFF14161C).withValues(alpha: 0.82),
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: SV.hair),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 30, spreadRadius: -6, offset: const Offset(0, 12))],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (int i = 0; i < _tabs.length; i++) _navItem(i),
-                ],
+    // Sits at the very bottom (SafeArea handles the home-indicator inset).
+    // Row(center) keeps it horizontally centred WITHOUT expanding vertically —
+    // a Center here would stretch the bar to full height and float the pill in
+    // the middle of the screen.
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF14161C).withValues(alpha: 0.82),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: SV.hair),
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 30, spreadRadius: -6, offset: const Offset(0, 12))],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (int i = 0; i < _tabs.length; i++) _navItem(i),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

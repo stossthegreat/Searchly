@@ -14,10 +14,21 @@ function optionalInt(name: string, fallback: number): number {
   return isNaN(parsed) ? fallback : parsed;
 }
 
+/**
+ * Normalize the OpenAI model name. Tolerates the common `gpt4o` typo (a missing
+ * hyphen), so `OPENAI_MODEL=gpt4o-mini` still resolves to the real `gpt-4o-mini`
+ * instead of a 404 "model does not exist" at request time.
+ */
+function normalizeModel(raw: string): string {
+  const v = (raw || '').trim();
+  if (!v) return 'gpt-4o-mini';
+  return v.replace(/^gpt4o/i, 'gpt-4o');
+}
+
 export const config = {
   port: optionalInt('PORT', 3000),
   openaiApiKey: optional('OPENAI_API_KEY', ''),
-  openaiModel: optional('OPENAI_MODEL', 'gpt-4o-mini'),
+  openaiModel: normalizeModel(optional('OPENAI_MODEL', 'gpt-4o-mini')),
   // Either BRAVE_API_KEY or SERPER_API_KEY works. Brave is preferred when both are set.
   braveApiKey: optional('BRAVE_API_KEY', ''),
   serperApiKey: optional('SERPER_API_KEY', ''),
