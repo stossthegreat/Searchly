@@ -132,14 +132,16 @@ export function queryBattery(mode: Mode, seeds: Seeds): QueryBattery {
 
     case 'worthit':
       return build(
-        [...BASE_SHOPPING],
+        // Gather the exact item AND its rivals/upgrades so the advisor can lay
+        // out the whole field, not just the one product.
+        [...BASE_SHOPPING, '{p} alternative', 'best {c} 2026', '{b} {p}'],
         [
           '{p} review reddit',
           '{p} long term review',
           '{p} problems complaints',
           'is {p} worth it',
-          '{p} vs',
-          'best {c} 2026 which',
+          '{p} vs alternative',
+          'best {c} 2026 wirecutter rtings',
         ],
         s,
       );

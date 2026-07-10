@@ -29,8 +29,8 @@ const VALID_MODES: Mode[] = [
 ];
 
 /** How many queries from each battery we actually fire (cost control). */
-const MAX_SHOPPING_QUERIES = 6;
-const MAX_EVIDENCE_QUERIES = 5;
+const MAX_SHOPPING_QUERIES = 8;
+const MAX_EVIDENCE_QUERIES = 6;
 
 function hash(s: string): string {
   return createHash('sha1').update(s).digest('hex').slice(0, 12);

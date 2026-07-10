@@ -115,6 +115,53 @@ String? heroImageFor(DecisionResult r) {
   return null;
 }
 
+/// Colour for a research-source kind (Reddit, expert, review…).
+Color kindColor(String kind) {
+  switch (kind) {
+    case 'expert':
+      return SV.gem;
+    case 'forum':
+      return SV.over;
+    case 'review':
+      return SV.iris;
+    case 'authentication':
+      return SV.wait;
+    default:
+      return SV.dim;
+  }
+}
+
+/// A short, human label for a research source.
+String kindLabel(String kind, String domain) {
+  final d = domain.replaceAll('www.', '');
+  if (d.contains('reddit')) return 'Reddit';
+  if (d.contains('youtube')) return 'YouTube';
+  if (d.contains('wirecutter') || d.contains('nytimes')) return 'Wirecutter';
+  if (d.contains('rtings')) return 'RTINGS';
+  if (d.contains('which.co')) return 'Which?';
+  switch (kind) {
+    case 'expert':
+      return 'Expert';
+    case 'forum':
+      return 'Forum';
+    case 'review':
+      return 'Review';
+    case 'authentication':
+      return 'Auth';
+    case 'news':
+      return 'News';
+    default:
+      return d.split('.').first;
+  }
+}
+
+/// Trust colour for a retailer trust score.
+Color trustColor(int trust) {
+  if (trust >= 90) return SV.buy;
+  if (trust >= 60) return SV.wait;
+  return SV.skip;
+}
+
 /// The one-sentence AI summary — the share line.
 String summaryFor(DecisionResult r) {
   if (r.share.line.trim().isNotEmpty) return r.share.line.trim();
