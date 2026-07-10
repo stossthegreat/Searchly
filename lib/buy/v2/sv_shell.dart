@@ -80,6 +80,8 @@ class _SearchlyShellState extends State<SearchlyShell> {
 
   Widget _navItem(int i) {
     final active = i == _index;
+    // Opal-style: icon stacked ABOVE the label, both always visible; the active
+    // item sits in a raised, slightly larger highlighted block.
     return GestureDetector(
       onTap: () {
         HapticFeedback.selectionClick();
@@ -87,25 +89,29 @@ class _SearchlyShellState extends State<SearchlyShell> {
       },
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
+        duration: const Duration(milliseconds: 240),
         curve: Curves.easeOut,
-        padding: EdgeInsets.symmetric(horizontal: active ? 20 : 18, vertical: 11),
+        width: active ? 92 : 80,
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: active ? SV.surface2 : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: active ? SV.hair : Colors.transparent),
         ),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(_tabs[i].$1, size: 20, color: active ? SV.ink : SV.faint),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOut,
-              child: active
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(_tabs[i].$2, style: const TextStyle(fontFamily: SV.font, color: SV.ink, fontSize: 14, fontWeight: FontWeight.w600)),
-                    )
-                  : const SizedBox.shrink(),
+            Icon(_tabs[i].$1, size: active ? 23 : 21, color: active ? SV.ink : SV.faint),
+            const SizedBox(height: 5),
+            Text(
+              _tabs[i].$2,
+              style: TextStyle(
+                fontFamily: SV.font,
+                color: active ? SV.ink : SV.faint,
+                fontSize: 11.5,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                letterSpacing: -0.1,
+              ),
             ),
           ],
         ),
