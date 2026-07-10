@@ -143,8 +143,16 @@ class ResultV2 extends StatelessWidget {
               child: Text(r.identification.category.toUpperCase(), style: SV.label(color: SV.dim, size: 10, spacing: 1.4)),
             ),
           ),
-          Center(
-            child: Text(categoryEmoji(r.identification.category), style: const TextStyle(fontSize: 116)),
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(30, 40, 30, 26),
+              child: ProductImage(
+                url: heroImageFor(r),
+                emoji: categoryEmoji(r.identification.category),
+                glyphSize: 116,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ],
       ),
@@ -308,7 +316,6 @@ class ResultV2 extends StatelessWidget {
             Container(
               width: 68,
               height: 68,
-              alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: SV.hair),
@@ -318,7 +325,15 @@ class ResultV2 extends StatelessWidget {
                   colors: [categoryTint(r.identification.category), const Color(0xFF0C0E14)],
                 ),
               ),
-              child: Text(categoryEmoji(r.identification.category), style: const TextStyle(fontSize: 32)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: ProductImage(
+                  url: o.image.trim().startsWith('http') ? o.image.trim() : null,
+                  emoji: categoryEmoji(r.identification.category),
+                  glyphSize: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -479,6 +494,40 @@ class ResultV2 extends StatelessWidget {
   }
 }
 
+/// A real product photo from the web, with a graceful emoji-glyph fallback
+/// while loading or if the listing has no image.
+class ProductImage extends StatelessWidget {
+  final String? url;
+  final String emoji;
+  final double glyphSize;
+  final BoxFit fit;
+  const ProductImage({super.key, required this.url, required this.emoji, this.glyphSize = 40, this.fit = BoxFit.contain});
+
+  @override
+  Widget build(BuildContext context) {
+    final u = url;
+    if (u == null || u.isEmpty) return _glyph();
+    return Image.network(
+      u,
+      fit: fit,
+      gaplessPlayback: true,
+      errorBuilder: (_, __, ___) => _glyph(),
+      loadingBuilder: (context, child, progress) {
+        if (progress == null) return child;
+        return Center(
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2, color: SV.faint),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _glyph() => Center(child: Text(emoji, style: TextStyle(fontSize: glyphSize)));
+}
+
 /// The dark share card overlay — product, giant verdict word, one line.
 void showShareCard(BuildContext context, DecisionResult r, VerdictStyle v, String summary) {
   showGeneralDialog(
@@ -535,7 +584,15 @@ class _ShareOverlay extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 18),
-                    Text(categoryEmoji(r.identification.category), style: const TextStyle(fontSize: 100)),
+                    SizedBox(
+                      height: 108,
+                      child: ProductImage(
+                        url: heroImageFor(r),
+                        emoji: categoryEmoji(r.identification.category),
+                        glyphSize: 100,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Text('${(r.identification.brand ?? '').isNotEmpty ? '${r.identification.brand} · ' : ''}${r.identification.productName}'.toUpperCase(),
                         textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: SV.label(color: SV.dim, size: 11, spacing: 1.0)),

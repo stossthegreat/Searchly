@@ -105,6 +105,16 @@ List<Offer> altsFor(DecisionResult r) {
   return pick.take(2).toList();
 }
 
+/// The real product photo — pulled from the backend's offers (Serper shopping
+/// images). Returns the first offer with a usable image, else null.
+String? heroImageFor(DecisionResult r) {
+  for (final o in r.offers) {
+    final u = o.image.trim();
+    if (u.startsWith('http')) return u;
+  }
+  return null;
+}
+
 /// The one-sentence AI summary — the share line.
 String summaryFor(DecisionResult r) {
   if (r.share.line.trim().isNotEmpty) return r.share.line.trim();
