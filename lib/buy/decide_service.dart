@@ -1,7 +1,45 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../services/app_settings_service.dart';
 import 'models.dart';
+
+/// Where a decision result came from — a live backend call or the on-device
+/// demo fallback. Surfaced in the UI so it's obvious whether the backend is
+/// actually being hit.
+enum DecideSource { live, demo }
+
+/// Diagnostics captured from the most recent `decide()` call. Lets the UI and
+/// the Diagnostics screen show exactly what happened instead of silently
+/// swapping in demo data.
+class DecideDebug {
+  final DecideSource source;
+  final String url;
+  final int? statusCode;
+  final int durationMs;
+  final String? error;
+  final String mode;
+  final String? query;
+  final bool hadImage;
+
+  const DecideDebug({
+    required this.source,
+    required this.url,
+    required this.durationMs,
+    required this.mode,
+    this.statusCode,
+    this.error,
+    this.query,
+    this.hadImage = false,
+  });
+
+  bool get isLive => source == DecideSource.live;
+
+  String get summary {
+    if (isLive) return 'LIVE · ${statusCode ?? '?'} · ${durationMs}ms';
+    return 'DEMO · ${error ?? 'no backend'} · ${durationMs}ms';
+  }
+}
 
 /// Talks to the Searchly buying engine (`POST /api/decide`).
 /// Falls back to on-device demo scenarios when no backend is configured or a
@@ -21,16 +59,22 @@ class DecideService {
     return AppSettingsService.instance.backendUrl;
   }
 
+  /// Diagnostics from the last decide() call — read by the debug UI.
+  DecideDebug? lastDebug;
+
   Future<DecisionResult> decide({
     required String mode,
     String? query,
     String? imageBase64,
   }) async {
-    if (baseUrl.isNotEmpty) {
+    final url = baseUrl;
+    final sw = Stopwatch()..start();
+
+    if (url.isNotEmpty) {
       try {
         final res = await http
             .post(
-              Uri.parse('$baseUrl/api/decide'),
+              Uri.parse('$url/api/decide'),
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode({
                 'mode': mode,
@@ -38,15 +82,90 @@ class DecideService {
                 if (imageBase64 != null) 'imageBase64': imageBase64,
               }),
             )
-            .timeout(const Duration(seconds: 30));
+            .timeout(const Duration(seconds: 45));
+        sw.stop();
         if (res.statusCode == 200) {
-          return DecisionResult.fromJson(jsonDecode(res.body) as Map);
+          final result = DecisionResult.fromJson(jsonDecode(res.body) as Map);
+          lastDebug = DecideDebug(
+            source: DecideSource.live,
+            url: url,
+            statusCode: 200,
+            durationMs: sw.elapsedMilliseconds,
+            mode: mode,
+            query: query,
+            hadImage: imageBase64 != null,
+          );
+          debugPrint('✅ decide LIVE ${sw.elapsedMilliseconds}ms · $mode · "${query ?? '[image]'}" · ${result.offers.length} offers');
+          return result;
         }
-      } catch (_) {
-        // fall through to demo
+        // Non-200 → capture the server's error body, then fall back to demo.
+        final body = res.body.length > 300 ? res.body.substring(0, 300) : res.body;
+        lastDebug = DecideDebug(
+          source: DecideSource.demo,
+          url: url,
+          statusCode: res.statusCode,
+          durationMs: sw.elapsedMilliseconds,
+          mode: mode,
+          query: query,
+          hadImage: imageBase64 != null,
+          error: 'HTTP ${res.statusCode}: $body',
+        );
+        debugPrint('⚠️ decide HTTP ${res.statusCode} → demo · $body');
+      } catch (e) {
+        sw.stop();
+        lastDebug = DecideDebug(
+          source: DecideSource.demo,
+          url: url,
+          durationMs: sw.elapsedMilliseconds,
+          mode: mode,
+          query: query,
+          hadImage: imageBase64 != null,
+          error: e.toString(),
+        );
+        debugPrint('❌ decide FAILED → demo · $e');
       }
+    } else {
+      sw.stop();
+      lastDebug = DecideDebug(
+        source: DecideSource.demo,
+        url: '',
+        durationMs: 0,
+        mode: mode,
+        query: query,
+        hadImage: imageBase64 != null,
+        error: 'No backend URL configured',
+      );
     }
+
     return DecisionResult.fromJson(_demo(mode));
+  }
+
+  /// GET /health — quick reachability + key-config check for the debug screen.
+  Future<ProbeResult> ping() => _probe('/health');
+
+  /// GET /api/diagnose — actually pings OpenAI + Serper and reports validity.
+  Future<ProbeResult> diagnose() => _probe('/api/diagnose', timeout: 45);
+
+  Future<ProbeResult> _probe(String path, {int timeout = 15}) async {
+    final url = baseUrl;
+    final sw = Stopwatch()..start();
+    if (url.isEmpty) {
+      return ProbeResult(ok: false, statusCode: null, durationMs: 0, body: 'No backend URL configured', url: url);
+    }
+    try {
+      final res = await http.get(Uri.parse('$url$path')).timeout(Duration(seconds: timeout));
+      sw.stop();
+      return ProbeResult(
+        ok: res.statusCode == 200,
+        statusCode: res.statusCode,
+        durationMs: sw.elapsedMilliseconds,
+        body: res.body,
+        url: '$url$path',
+      );
+    } catch (e) {
+      sw.stop();
+      return ProbeResult(ok: false, statusCode: null, durationMs: sw.elapsedMilliseconds, body: e.toString(), url: '$url$path');
+    }
   }
 
   Map _demo(String mode) => Map<String, dynamic>.from(_demoData[mode] ?? _demoData['worthit']!);
@@ -139,4 +258,24 @@ class DecideService {
       'durationMs': 2300,
     },
   };
+}
+
+/// Result of a GET probe against /health or /api/diagnose.
+class ProbeResult {
+  final bool ok;
+  final int? statusCode;
+  final int durationMs;
+  final String body;
+  final String url;
+  const ProbeResult({required this.ok, required this.statusCode, required this.durationMs, required this.body, required this.url});
+
+  /// Pretty-print the JSON body if it parses, else return it raw.
+  String get prettyBody {
+    try {
+      final decoded = jsonDecode(body);
+      return const JsonEncoder.withIndent('  ').convert(decoded);
+    } catch (_) {
+      return body;
+    }
+  }
 }

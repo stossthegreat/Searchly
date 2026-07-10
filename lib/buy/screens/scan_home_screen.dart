@@ -10,6 +10,7 @@ import '../decide_service.dart';
 import '../widgets/aurora_background.dart';
 import '../widgets/scan_overlay.dart';
 import '../widgets/result_widgets.dart';
+import 'diagnostics_screen.dart';
 
 enum _Phase { idle, scanning, result }
 
@@ -40,13 +41,45 @@ class _ScanHomeScreenState extends State<ScanHomeScreen> {
   }
 
   Future<void> _onScanDone() async {
-    final r = await (_pending ?? DecideService.instance.decide(mode: _mode));
+    DecisionResult r;
+    try {
+      r = await (_pending ?? DecideService.instance.decide(mode: _mode));
+    } catch (e) {
+      // decide() is designed never to throw, but guard so a failure can never
+      // leave the scan overlay stuck on screen forever.
+      if (!mounted) return;
+      setState(() => _phase = _Phase.idle);
+      _snack('Something went wrong: $e');
+      return;
+    }
     if (!mounted) return;
     HapticFeedback.heavyImpact();
     setState(() {
       _result = r;
       _phase = _Phase.result;
     });
+
+    // Tell the user when we're showing demo data instead of a live result, so
+    // a broken backend is never mistaken for a working one.
+    final dbg = DecideService.instance.lastDebug;
+    if (dbg != null && !dbg.isLive) {
+      _snack('Showing demo — backend not reachable. Tap ⚙ to diagnose.', action: 'Debug', onAction: _openDiagnostics);
+    }
+  }
+
+  void _snack(String msg, {String? action, VoidCallback? onAction}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      backgroundColor: Buy.elevated,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 5),
+      action: action != null ? SnackBarAction(label: action, textColor: Buy.cyan, onPressed: onAction ?? () {}) : null,
+    ));
+  }
+
+  void _openDiagnostics() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DiagnosticsScreen()));
   }
 
   void _pickMode(String id) {
@@ -121,36 +154,70 @@ class _ScanHomeScreenState extends State<ScanHomeScreen> {
           const SizedBox(width: 10),
           const Text('Searchly', style: TextStyle(fontFamily: 'SF Pro Display', color: Buy.ink, fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: -0.4)),
           const Spacer(),
-          _iconBtn(Icons.bookmark_border_rounded),
+          _iconBtn(Icons.bookmark_border_rounded, onTap: () => _snack('Saved results are coming soon.')),
           const SizedBox(width: 8),
-          _iconBtn(Icons.settings_outlined),
+          _iconBtn(Icons.settings_outlined, onTap: _openDiagnostics),
         ],
       ),
     );
   }
 
-  Widget _iconBtn(IconData i) => Container(
-        width: 36, height: 36, alignment: Alignment.center,
-        decoration: Buy.glassBox(radius: 11),
-        child: Icon(i, size: 17, color: Buy.mut),
+  Widget _iconBtn(IconData i, {VoidCallback? onTap}) => GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          width: 36, height: 36, alignment: Alignment.center,
+          decoration: Buy.glassBox(radius: 11),
+          child: Icon(i, size: 17, color: Buy.mut),
+        ),
       );
 
   Widget _searchField() {
     return Container(
       decoration: Buy.glassBox(radius: 16),
-      child: TextField(
-        controller: _searchCtrl,
-        style: const TextStyle(fontFamily: 'SF Pro Display', color: Buy.ink, fontSize: 14.5),
-        textInputAction: TextInputAction.search,
-        onSubmitted: (_) => _submitSearch(),
-        cursorColor: Buy.cyan,
-        decoration: InputDecoration(
-          hintText: 'Search anything you want to buy…',
-          hintStyle: Buy.muted.copyWith(fontSize: 14.5),
-          prefixIcon: const Icon(Icons.search_rounded, color: Buy.cyan, size: 20),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 6),
-        ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _searchCtrl,
+              style: const TextStyle(fontFamily: 'SF Pro Display', color: Buy.ink, fontSize: 14.5),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => _submitSearch(),
+              onChanged: (_) => setState(() {}), // toggle the submit button
+              cursorColor: Buy.cyan,
+              decoration: InputDecoration(
+                hintText: 'Search anything you want to buy…',
+                hintStyle: Buy.muted.copyWith(fontSize: 14.5),
+                prefixIcon: const Icon(Icons.search_rounded, color: Buy.cyan, size: 20),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 6),
+              ),
+            ),
+          ),
+          // Explicit submit button — don't make users hunt for the keyboard's
+          // return key (the #1 reason "typing does nothing").
+          GestureDetector(
+            onTap: _submitSearch,
+            behavior: HitTestBehavior.opaque,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              margin: const EdgeInsets.fromLTRB(2, 5, 5, 5),
+              width: 46,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                gradient: _searchCtrl.text.trim().isEmpty ? null : Buy.accentGrad,
+                color: _searchCtrl.text.trim().isEmpty ? Buy.glass : null,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.arrow_forward_rounded,
+                size: 20,
+                color: _searchCtrl.text.trim().isEmpty ? Buy.mut2 : const Color(0xFF06121F),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -274,11 +341,13 @@ class _ScanHomeScreenState extends State<ScanHomeScreen> {
 
   Widget _resultView(DecisionResult r) {
     final isAuth = r.authenticity != null;
+    final dbg = DecideService.instance.lastDebug;
     return Column(
       key: ValueKey(r.mode + r.identification.productName),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 8),
+        if (dbg != null) _sourceBadge(dbg),
         VerdictCard(r: r, onCta: () => _openBestDeal(r)),
         const SizedBox(height: 16),
         if (isAuth) ..._authSection(r) else ..._offerSection(r),
@@ -296,6 +365,33 @@ class _ScanHomeScreenState extends State<ScanHomeScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _sourceBadge(DecideDebug dbg) {
+    final live = dbg.isLive;
+    final color = live ? Buy.good : Buy.warn;
+    return GestureDetector(
+      onTap: _openDiagnostics,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(live ? Icons.cloud_done_rounded : Icons.cloud_off_rounded, size: 14, color: color),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              live ? 'Live result · ${dbg.durationMs}ms' : 'Demo data — backend unreachable · tap to debug',
+              style: TextStyle(fontFamily: 'SF Pro Display', color: color, fontSize: 11.5, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ]),
+      ),
     );
   }
 
