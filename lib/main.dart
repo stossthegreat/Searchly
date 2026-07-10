@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'theme/app_theme.dart';
-import 'buy/screens/scan_home_screen.dart';
+import 'buy/v2/sv_shell.dart';
 import 'screens/home_screen.dart';
 import 'screens/planner_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -147,8 +147,8 @@ class SearchlyApp extends StatelessWidget {
       theme: AppTheme.theme,
       navigatorObservers:
           firebaseReady ? [AnalyticsService.instance.observer] : [],
-      // Searchly buying engine is now the app entry point.
-      home: const ScanHomeScreen(),
+      // Searchly V2 — AI buying advisor. Floating-nav shell is the entry point.
+      home: const SearchlyShell(),
     );
   }
 }
