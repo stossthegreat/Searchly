@@ -110,18 +110,34 @@ class SharePayload {
   factory SharePayload.fromJson(Map j) => SharePayload(_str(j['verb']), _str(j['stat']), _str(j['line']));
 }
 
+/// A research source behind the verdict — Reddit, Wirecutter, RTINGS, Which?, etc.
+class Evidence {
+  final String title, url, domain, snippet, kind;
+  final int sourceTrust;
+  Evidence({required this.title, required this.url, required this.domain, required this.snippet, required this.kind, required this.sourceTrust});
+  factory Evidence.fromJson(Map j) => Evidence(
+        title: _str(j['title']),
+        url: _str(j['url']),
+        domain: _str(j['domain']),
+        snippet: _str(j['snippet']),
+        kind: _str(j['kind'], 'other'),
+        sourceTrust: _int(j['sourceTrust'], 50),
+      );
+}
+
 class DecisionResult {
   final String mode;
   final Identification identification;
   final Verdict verdict;
   final List<Offer> offers;
+  final List<Evidence> evidence;
   final double? bestPrice, priceMin, priceMax, priceAvg;
   final Authenticity? authenticity;
   final SharePayload share;
   final int durationMs;
   DecisionResult({
     required this.mode, required this.identification, required this.verdict, required this.offers,
-    required this.share, required this.durationMs,
+    required this.evidence, required this.share, required this.durationMs,
     this.bestPrice, this.priceMin, this.priceMax, this.priceAvg, this.authenticity,
   });
   factory DecisionResult.fromJson(Map j) {
@@ -131,6 +147,7 @@ class DecisionResult {
       identification: Identification.fromJson((j['identification'] as Map?) ?? const {}),
       verdict: Verdict.fromJson((j['verdict'] as Map?) ?? const {}),
       offers: (j['offers'] as List? ?? const []).map((e) => Offer.fromJson(e as Map)).toList(),
+      evidence: (j['evidence'] as List? ?? const []).map((e) => Evidence.fromJson(e as Map)).toList(),
       bestPrice: _dbl(j['bestPrice']),
       priceMin: _dbl(range['min']),
       priceMax: _dbl(range['max']),
