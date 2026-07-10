@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../services/app_settings_service.dart';
 import 'models.dart';
 
 /// Talks to the Searchly buying engine (`POST /api/decide`).
@@ -9,8 +10,16 @@ class DecideService {
   DecideService._();
   static final instance = DecideService._();
 
-  /// Point this at your Railway deployment. Empty → always use demo data.
-  static const String baseUrl = String.fromEnvironment('SEARCHLY_API', defaultValue: '');
+  /// The backend base URL. Uses the same source of truth as the rest of the
+  /// app (Settings screen / `--dart-define=BACKEND_URL=...`), which defaults to
+  /// the production Railway deployment — so the buying engine hits the real
+  /// backend out of the box instead of only ever showing demo data.
+  /// A compile-time `--dart-define=SEARCHLY_API=...` still overrides it.
+  String get baseUrl {
+    const override = String.fromEnvironment('SEARCHLY_API', defaultValue: '');
+    if (override.isNotEmpty) return override;
+    return AppSettingsService.instance.backendUrl;
+  }
 
   Future<DecisionResult> decide({
     required String mode,

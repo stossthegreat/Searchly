@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
+import { createRequire } from 'node:module';
 import { config } from './config.js';
 import { registerHealthRoute } from './routes/health.js';
 import { registerDiagnoseRoute } from './routes/diagnose.js';
@@ -13,21 +14,32 @@ import { registerParseUrlRoute } from './routes/parse-url.js';
 import { registerTrendingRoute } from './routes/trending.js';
 import { startTrendingScheduler } from './services/trending-scheduler.js';
 
+/**
+ * Pretty-print logs in development, but ONLY if pino-pretty is actually
+ * installed. It's a devDependency, so on Railway (production) it's pruned —
+ * referencing it there crashes Fastify at boot before the health check can
+ * ever pass. Resolving it defensively means the server always starts and
+ * falls back to structured JSON logs when the pretty transport isn't present.
+ */
+function prettyTransport(): { target: string; options: Record<string, unknown> } | undefined {
+  if (process.env.NODE_ENV === 'production') return undefined;
+  try {
+    createRequire(import.meta.url).resolve('pino-pretty');
+    return {
+      target: 'pino-pretty',
+      options: { translateTime: 'HH:MM:ss', ignore: 'pid,hostname' },
+    };
+  } catch {
+    return undefined; // pino-pretty not installed — use default JSON logging
+  }
+}
+
 async function main(): Promise<void> {
   const app = Fastify({
     bodyLimit: 15 * 1024 * 1024, // 15 MB — base64 product photos in /api/decide JSON bodies
     logger: {
       level: 'info',
-      transport:
-        process.env.NODE_ENV !== 'production'
-          ? {
-              target: 'pino-pretty',
-              options: {
-                translateTime: 'HH:MM:ss',
-                ignore: 'pid,hostname',
-              },
-            }
-          : undefined,
+      transport: prettyTransport(),
     },
   });
 
