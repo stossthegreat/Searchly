@@ -127,9 +127,11 @@ With the TTL cache hitting even 30% of repeat queries, you cut that to ~$40/mo.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `OPENAI_API_KEY` | ✅ | — | OpenAI API key |
-| `SERPER_API_KEY` | ✅ | — | Serper.dev API key |
+| `OPENAI_API_KEY` | ✅ | — | OpenAI API key (identification, verdicts, transcription) |
+| `SERPER_API_KEY` | ✅ | — | Serper.dev key — **required** for the buying engine (`/api/decide` uses Serper's `/shopping` endpoint) |
+| `BRAVE_API_KEY` | | — | Optional. Preferred web-search provider for the legacy recipe endpoints only |
 | `OPENAI_MODEL` | | `gpt-4o-mini` | LLM model to use |
+| `NODE_ENV` | | — | Set to `production` on Railway (see `railway.json`) — disables the dev-only pretty log transport |
 | `PORT` | | `3000` | Server port (Railway sets this) |
 | `CACHE_TTL_SECONDS` | | `3600` | Search result cache TTL |
 | `MAX_CANDIDATES` | | `6` | Max URLs to fetch per search |
